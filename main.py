@@ -39,15 +39,19 @@ def create_file():
         data = []
     return data
 
-def add_task(args):
-    item = {}
+def create_task(task):
     global id_cnt
+    item = {}
     item['id'] = id_cnt
     id_cnt += 1
-    item['task'] = args.task
-    item['status'] = "todo"
+    item['task'] = task
+    item['status'] = 'todo'
     item['created_at'] = datetime.now().isoformat()
     item['updated_at'] = datetime.now().isoformat()
+    return item
+
+def add_task(args):
+    item = create_task(args.task)
     with open(FILE_NAME,'w+') as f:
         try:
             data = json.load(f)
