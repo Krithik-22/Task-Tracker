@@ -102,19 +102,19 @@ def remove_task(task_id):
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)  
 
-def update_status(status, task_id):
+def update_status(task_status, task_id):
     with open(FILE_NAME,'r') as f:
         data = json.load(f)
-    if status == 'mark-in-progress':
+    if task_status == 'mark-in-progress':
         print(data)
         data = [
-            {**item, item['status']:'in-progress'} if item['id'] == int(task_id) else item
+            {**item, "status" :'in-progress'} if item['id'] == int(task_id) else item
             for item in data
         ]
         print(data)
-    elif status == 'mark-done':
+    elif task_status == 'mark-done':
         data = [
-            {**item, item['status']:'done'} if item['id'] == int(task_id) else item
+            {**item, "status" :'done'} if item['id'] == int(task_id) else item
             for item in data
         ]
     
