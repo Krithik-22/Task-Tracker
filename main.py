@@ -19,7 +19,7 @@ def command_line_setup():
     update_parser.add_argument("task",help="Updated new task")
 
     #remove command
-    remove_parser = sub_parser.add_parser("remove",help="Remove task of given Id")
+    remove_parser = sub_parser.add_parser("delete",help="Remove task of given Id")
     remove_parser.add_argument("id",help="Which task Id to Remove")
 
     return parser
@@ -80,6 +80,25 @@ def update_task(task_id, task):
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)   
 
+def remove_task(task_id):
+    with open(FILE_NAME,'r') as f:
+        data = json.load(f)
+    
+    '''data = [
+        item if item['id'] != int(task_id)
+        for item in data
+    ]'''
+
+    data = [item for item in data if item['id'] != int(task_id)]
+
+    data = list(filter(
+        lambda item: item['id'] != int(task_id),
+        data
+    ))
+    
+    with open(FILE_NAME,'w') as f:
+        json.dump(data,f,indent=4)  
+
 
 if __name__ == '__main__':
     parser = command_line_setup()
@@ -87,6 +106,6 @@ if __name__ == '__main__':
     if args.command == 'add':
         add_task(args)
     elif args.command == 'update':
-        print(args.id)
-        print(args.task)
         update_task(args.id, args.task)
+    elif args.command == 'delete':
+        remove_task(args.id)
