@@ -70,6 +70,7 @@ def add_task(args):
     data.append(item)
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)
+    print(f'Task added successfully (ID: {next_id})')
 
 #update task method
 def update_task(task_id, task):
