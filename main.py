@@ -22,6 +22,12 @@ def command_line_setup():
     remove_parser = sub_parser.add_parser("delete",help="Remove task of given Id")
     remove_parser.add_argument("id",help="Which task Id to Remove")
 
+    status_progress_parser = sub_parser.add_parser("mark-in-progress", help="Update the status of task to in-progress")
+    status_progress_parser.add_argument("id",help="Which task Id to update status")
+
+    status_done_parser = sub_parser.add_parser("mark-done", help="Update the status of task to done")
+    status_done_parser.add_argument("id",help="Which task Id to update status")
+
     return parser
 
 
@@ -84,17 +90,29 @@ def remove_task(task_id):
     with open(FILE_NAME,'r') as f:
         data = json.load(f)
     
-    '''data = [
-        item if item['id'] != int(task_id)
-        for item in data
-    ]'''
-
     data = [item for item in data if item['id'] != int(task_id)]
 
-    data = list(filter(
+    '''data = list(filter(
         lambda item: item['id'] != int(task_id),
         data
-    ))
+    ))'''
+
+    with open(FILE_NAME,'w') as f:
+        json.dump(data,f,indent=4)  
+
+def update_status(status, task_id):
+    with open(FILE_NAME,'r') as f:
+        data = json.load(f)
+    if status == 'mark-in-progress':
+        data = [
+            {**item, item['status']:'in-progress'} if item['id'] == int(task_id) else item
+            for item in data
+        ]
+    elif status == 'mark-done':
+        data = [
+            {**item, item['status']:'done'} if item['id'] == int(task_id) else item
+            for item in data
+        ]
     
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)  
@@ -109,3 +127,7 @@ if __name__ == '__main__':
         update_task(args.id, args.task)
     elif args.command == 'delete':
         remove_task(args.id)
+    elif args.command == 'mark-in-progress':
+        update_status(args.command,args.id)
+    elif args.command == 'mark-done':
+        update_status(args.command,args.id)
