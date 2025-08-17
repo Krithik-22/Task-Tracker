@@ -47,9 +47,9 @@ def create_file():
     return data
 
 #create task item and return it
-def create_task(id, task):
+def create_task(task_id, task):
     item = {}
-    item['id'] = id + 1
+    item['id'] = task_id
     item['task'] = task
     item['status'] = 'todo'
     item['created_at'] = datetime.now().isoformat()
@@ -65,7 +65,8 @@ def add_task(args):
                 data = json.load(f)
             except json.JSONDecodeError:
                 data = []
-    item = create_task(len(data),args.task)
+    next_id = max([task['id'] for task in data], default=0)+1
+    item = create_task(next_id,args.task)
     data.append(item)
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)
@@ -106,12 +107,10 @@ def update_status(task_status, task_id):
     with open(FILE_NAME,'r') as f:
         data = json.load(f)
     if task_status == 'mark-in-progress':
-        print(data)
         data = [
             {**item, "status" :'in-progress'} if item['id'] == int(task_id) else item
             for item in data
         ]
-        print(data)
     elif task_status == 'mark-done':
         data = [
             {**item, "status" :'done'} if item['id'] == int(task_id) else item
