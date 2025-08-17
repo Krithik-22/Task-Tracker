@@ -37,6 +37,7 @@ def create_file():
         data = []
     return data
 
+#create task item and return it
 def create_task(id, task):
     item = {}
     item['id'] = id + 1
@@ -47,6 +48,7 @@ def create_task(id, task):
     print(item)
     return item
 
+#add task method
 def add_task(args):
     data = []
     if os.path.exists(FILE_NAME):
@@ -60,8 +62,31 @@ def add_task(args):
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)
 
+#update task method
+def update_task(task_id, task):
+    with open(FILE_NAME,'r') as f:
+        data = json.load(f)
+    
+    #in-place mutate
+    '''for item in data:
+        if item['id'] == id:
+            item['task'] = task
+    '''
+    #More pythonic way list comprehensions
+    data = [
+        {**item, 'task': task} if item['id'] == int(task_id) else item
+        for item in data
+    ]    
+    with open(FILE_NAME,'w') as f:
+        json.dump(data,f,indent=4)   
+
+
 if __name__ == '__main__':
     parser = command_line_setup()
     args = parser.parse_args()
     if args.command == 'add':
         add_task(args)
+    elif args.command == 'update':
+        print(args.id)
+        print(args.task)
+        update_task(args.id, args.task)
