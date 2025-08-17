@@ -3,8 +3,6 @@ import os
 import json
 from datetime import datetime
 
-
-id_cnt = 1
 FILE_NAME = 'tasks.json'
 
 def command_line_setup():
@@ -39,26 +37,28 @@ def create_file():
         data = []
     return data
 
-def create_task(task):
-    global id_cnt
+def create_task(id, task):
     item = {}
-    item['id'] = id_cnt
-    id_cnt += 1
+    item['id'] = id + 1
     item['task'] = task
     item['status'] = 'todo'
     item['created_at'] = datetime.now().isoformat()
     item['updated_at'] = datetime.now().isoformat()
+    print(item)
     return item
 
 def add_task(args):
-    item = create_task(args.task)
-    with open(FILE_NAME,'w+') as f:
-        try:
-            data = json.load(f)
-        except json.JSONDecodeError:
-            data = []
-        data.append(item)
-        json.dump(data,f)
+    data = []
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME,'r') as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = []
+    item = create_task(len(data),args.task)
+    data.append(item)
+    with open(FILE_NAME,'w') as f:
+        json.dump(data,f,indent=4)
 
 if __name__ == '__main__':
     parser = command_line_setup()
