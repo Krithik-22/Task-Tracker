@@ -28,6 +28,9 @@ def command_line_setup():
     status_done_parser = sub_parser.add_parser("mark-done", help="Update the status of task to done")
     status_done_parser.add_argument("id",help="Which task Id to update status")
 
+    list_parser = sub_parser.add_parser("list",help="List the tasks")
+    list_parser.add_argument("filter",nargs='?',default='all',help="Status filter")
+
     return parser
 
 
@@ -51,7 +54,6 @@ def create_task(id, task):
     item['status'] = 'todo'
     item['created_at'] = datetime.now().isoformat()
     item['updated_at'] = datetime.now().isoformat()
-    print(item)
     return item
 
 #add task method
@@ -104,10 +106,12 @@ def update_status(status, task_id):
     with open(FILE_NAME,'r') as f:
         data = json.load(f)
     if status == 'mark-in-progress':
+        print(data)
         data = [
             {**item, item['status']:'in-progress'} if item['id'] == int(task_id) else item
             for item in data
         ]
+        print(data)
     elif status == 'mark-done':
         data = [
             {**item, item['status']:'done'} if item['id'] == int(task_id) else item
@@ -116,6 +120,20 @@ def update_status(status, task_id):
     
     with open(FILE_NAME,'w') as f:
         json.dump(data,f,indent=4)  
+
+def list_tasks(args):
+    status_filter = args.filter
+
+    with open(FILE_NAME,'r') as f:
+        data = json.load(f)
+    
+    if status_filter == 'todo':
+        data = [item for item in data if item['status'] == status_filter]
+    elif status_filter == 'in-progress':
+        data = [item for item in data if item['status'] == status_filter]
+    elif status_filter == 'done':
+        data = [item for item in data if item['status'] == status_filter]
+    print(data)
 
 
 if __name__ == '__main__':
@@ -131,3 +149,5 @@ if __name__ == '__main__':
         update_status(args.command,args.id)
     elif args.command == 'mark-done':
         update_status(args.command,args.id)
+    elif args.command == 'list':
+        list_tasks(args)
