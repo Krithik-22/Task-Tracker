@@ -3,8 +3,8 @@ from datetime import datetime
 
 @dataclass
 class Task:
-    id
-    task
+    id: int
+    task: str
     status = 'todo'
     created_at = datetime.now().isoformat()
     updated_at = datetime.now().isoformat()
