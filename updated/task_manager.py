@@ -25,7 +25,6 @@ class TaskManager:
             json.dump(data,f,indent=4)
 
     def get_task(self,task_id):
-        print(self.tasks[int(task_id)])
         return self.tasks[int(task_id)]
 
     def add_task(self,task_desc):
@@ -46,3 +45,13 @@ class TaskManager:
             print({id : asdict(t) for id,t in self.tasks.items() if t.status == 'done'})
         else:
             print({id : asdict(t) for id,t in self.tasks.items()})
+        
+    def update(self, args):
+        task = self.get_task(args.id)
+        if args.command == 'mark-in-progress': 
+            task.mark_in_progress()
+        elif args.command == 'mark-done': 
+            task.mark_done()
+        elif args.command == 'update': 
+            task.update(args.task)
+        self.save_data()

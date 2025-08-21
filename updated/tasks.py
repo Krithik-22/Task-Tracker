@@ -14,9 +14,7 @@ class Task:
         self.updated_at = datetime.now().isoformat()
     
     def mark_in_progress(self):
-        print(self.status)
         self.status = 'in-progress'
-        print(self.status)
         self.updated_at = datetime.now().isoformat()
 
     def update_task(self,new_task):
