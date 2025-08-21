@@ -10,7 +10,7 @@ if __name__ == '__main__':
         "update": lambda args : task_manager.get_task(args.id).update_task(args.task),
         "mark-in-progress": lambda args : task_manager.get_task(args.id).mark_in_progress(),
         "mark-done": lambda args : task_manager.get_task(args.id).mark_done(),
-        "list": lambda args : task_manager.list(getattr(args.filter,None))
+        "list": lambda args : task_manager.list_all_tasks(getattr(args,'filter'))
     }
 
     parser = command_line_setup()

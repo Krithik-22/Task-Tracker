@@ -14,34 +14,35 @@ class TaskManager:
             return {}
         try:
             with open(self.file_name,'r') as f:
-                data = {Task(**t) for t in json.load(f)}
+                data = {int(id) : Task(**t) for id,t in json.load(f).items()}
         except json.JSONDecodeError:
             data = {}
         return data
     
     def save_data(self):
         with open(self.file_name,'w') as f:
-            data = {t for t in self.tasks}
+            data = {id : asdict(t) for id, t in self.tasks.items()}
             json.dump(data,f,indent=4)
 
     def get_task(self,task_id):
-        return self.tasks[task_id]
+        print(self.tasks[int(task_id)])
+        return self.tasks[int(task_id)]
 
     def add_task(self,task_desc):
-        id = max([t.id for t in self.tasks], default=0) + 1
+        id = int(max([t for t in self.tasks],default = 0)) + 1
         task = Task(id,task_desc)
         self.tasks[id] = task
         self.save_data()
         print(f'Task added successfully: ID({id})')
 
     def remove_task(self,task_id):
-        del self.tasks[task_id]
+        del self.tasks[int(task_id)]
         self.save_data()
 
     def list_all_tasks(self,filter='all'):
         if filter == 'in-progress':
-            print({asdict(t) for t in self.tasks if t.status == 'in-progress'})
+            print({id : asdict(t) for id,t in self.tasks.items() if t.status == 'in-progress'})
         elif filter == 'done':
-            print({asdict(t) for t in self.tasks if t.status == 'done'})
+            print({id : asdict(t) for id,t in self.tasks.items() if t.status == 'done'})
         else:
-            print({asdict(t) for t in self.tasks})
+            print({id : asdict(t) for id,t in self.tasks.items()})
